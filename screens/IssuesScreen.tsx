@@ -27,6 +27,7 @@ const IssuesScreen = () => {
             query,
         },
     });
+    
     console.log({ data, loading, error });
     return (
         <View>
@@ -78,7 +79,7 @@ const IssuesScreen = () => {
                     }}
                 />
             </ThemedView>
-            {data?.repository?.issues.edges.map(
+            {data?.search?.edges.map(
                 (issue: { node: Issue }, index: number) => {
                     return (
                         <IssueCard

@@ -33,3 +33,9 @@ export type Repository = {
         issue: Issue;
     };
 };
+
+export type Search = {
+    search: {
+        edges: IssueNode[];
+    };
+}
