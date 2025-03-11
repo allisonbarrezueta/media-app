@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const SEARCH_ISSUES = gql`
-    query SearchIssues($query: String!, $first: Int!, $after: String) {
-        search(query: $query, type: ISSUE, first: $first, after: $after) {
+    query SearchIssues($query: String!, $after: String!) {
+        search(query: $query, type: ISSUE, first: 10, after: $after) {
             edges {
                 node {
                     ... on Issue {

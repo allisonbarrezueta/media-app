@@ -24,3 +24,9 @@ export function getTextColorForBackground(hexColor: string) {
     // Return black for light colors and white for dark colors based on luminance
     return luminance > threshold ? "black" : "white";
 }
+
+export const stateOptions = [
+    { title: "Open", value: "open" },
+    { title: "Closed", value: "closed" },
+    { title: "All", value: "" },
+];
