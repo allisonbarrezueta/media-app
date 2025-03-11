@@ -1,7 +1,7 @@
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { GET_ISSUE } from "@/graphql/queries";
-import { Issue } from "@/types/issues";
+import { Repository } from "@/types/issues";
 import { useQuery } from "@apollo/client";
 import React from "react";
 import {
@@ -25,8 +25,7 @@ const IssueScreen = ({ number }: Props) => {
             number,
         },
     });
-    const issue = data?.repository?.issue as Issue;
-    console.log({ issue });
+    const issue = (data as Repository)?.repository?.issue;
 
     const {
         data: comments,

@@ -12,16 +12,17 @@ import { StyleSheet, View } from "react-native";
 
 const IssuesScreen = () => {
     const [search, setSearch] = useState("");
+    const [state, setState] = useState(["OPEN", "CLOSED"]);
 
     // Usage with variables
     const { data, loading, error } = useQuery(GET_ISSUES, {
         variables: {
             owner: "facebook",
             name: "react-native",
-            states: ["OPEN"],
+            states: ["OPEN", "CLOSED"],
         },
     });
-
+    console.log({ data });
     return (
         <View>
             <ThemedView style={styles.titleContainer}>

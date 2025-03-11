@@ -28,7 +28,7 @@ export type Issue = {
     body: string;
 };
 
-export type IssueDetail = {
+export type Repository = {
     repository: {
         issue: Issue;
     };

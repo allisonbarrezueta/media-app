@@ -26,6 +26,12 @@ jobs:
                   EXPO_PUBLIC_API_URL: ${{ secrets.EXPO_PUBLIC_API_URL }}
                   EXPO_PUBLIC_TOKEN: ${{ secrets.EXPO_PUBLIC_TOKEN }}
 
+            - name: Export secrets to .env
+              run: |
+                  echo "EXPO_PUBLIC_API_URL=${{ secrets.EXPO_PUBLIC_API_URL }}" >> .env
+                  echo "EXPO_PUBLIC_TOKEN=${{ secrets.EXPO_PUBLIC_TOKEN }}" >> .env
+                  echo "EXPO_TOKEN=${{ secrets.EXPO_TOKEN }}" >> .env
+
             - name: Checkout repository
               uses: actions/checkout@v4
 
