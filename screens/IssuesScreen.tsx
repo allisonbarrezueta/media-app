@@ -9,8 +9,7 @@ import { IssueNode } from "@/types/issues";
 import { useQuery } from "@apollo/client";
 import { isEmpty } from "lodash";
 import { useEffect, useState } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { FlatList, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import SelectDropdown from "react-native-select-dropdown";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -27,12 +26,11 @@ const IssuesScreen = () => {
     const { data, loading, error } = useQuery(SEARCH_ISSUES, {
         variables: {
             query,
-            // after: "",
         },
     });
 
     useEffect(() => {
-        if (data) {
+        if (!isEmpty(data?.search?.edges)) {
             setIssues(data?.search?.edges);
         }
     }, [data]);
@@ -46,7 +44,6 @@ const IssuesScreen = () => {
                     return <IssueCard key={item.node.id} item={item.node} />;
                 }}
                 keyExtractor={(item) => item.node.id}
-                // ItemSeparatorComponent={myItemSeparator}
                 // ListEmptyComponent={myListEmpty}
                 ListHeaderComponent={() => (
                     <>

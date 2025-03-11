@@ -1,10 +1,10 @@
-import ParallaxScrollView from "@/components/ParallaxScrollView";
+import ParallaxView from "@/components/ParallaxView";
 import IssuesScreen from "@/screens/IssuesScreen";
 import { Image, StyleSheet } from "react-native";
 
 export default function HomeScreen() {
     return (
-        <ParallaxScrollView
+        <ParallaxView
             headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
             headerImage={
                 <Image
@@ -14,7 +14,7 @@ export default function HomeScreen() {
             }
         >
             <IssuesScreen />
-        </ParallaxScrollView>
+        </ParallaxView>
     );
 }
 

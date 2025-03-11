@@ -2,19 +2,15 @@ import { gql } from "@apollo/client";
 
 export const SEARCH_ISSUES = gql`
     query SearchIssues($query: String!) {
-        search(query: $query, first: 10) {
+        search(query: $query, type: ISSUE, first: 10) {
             edges {
                 node {
                     ... on Issue {
                         id
                         title
-                        url
                         number
                         state
                         createdAt
-                        author {
-                            url
-                        }
                         labels(first: 3) {
                             edges {
                                 node {
@@ -126,6 +122,7 @@ export const GET_COMMENTS = gql`
                             body
                             author {
                                 avatarUrl
+                                login
                             }
                         }
                     }

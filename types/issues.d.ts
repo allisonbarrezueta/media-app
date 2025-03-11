@@ -26,6 +26,7 @@ export type Issue = {
     };
     labels: Label;
     body: string;
+    comments: Comment[];
 };
 
 export type Repository = {
@@ -38,4 +39,19 @@ export type Search = {
     search: {
         edges: IssueNode[];
     };
-}
+};
+
+export type Comment = {
+    edges: CommentNode[];
+};
+
+export type CommentNode = {
+    node: {
+        id: string;
+        body: string;
+        author: {
+            avatarUrl: string;
+            login: string;
+        };
+    };
+};

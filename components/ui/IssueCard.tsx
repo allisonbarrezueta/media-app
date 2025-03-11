@@ -1,5 +1,4 @@
 import { Issue } from "@/types/issues";
-import * as Linking from "expo-linking";
 import { Link } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -11,10 +10,6 @@ type Props = {
 };
 
 const IssueCard = ({ item }: Props) => {
-    const url = Linking.useURL();
-    // console.log({ url });
-    console.log({ item });
-
     return (
         <Link
             href={{
