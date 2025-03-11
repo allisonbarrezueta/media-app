@@ -22,7 +22,7 @@ const IssuesScreen = () => {
             states: ["OPEN", "CLOSED"],
         },
     });
-    console.log({ data });
+    console.log({ data, loading, error });
     return (
         <View>
             <ThemedView style={styles.titleContainer}>

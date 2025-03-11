@@ -7,7 +7,6 @@ const httpLink = createHttpLink({
 
 const authLink = setContext((_, { headers }) => {
     const token = process.env.EXPO_PUBLIC_TOKEN;
-    console.log({ token });
     return {
         headers: {
             ...headers,

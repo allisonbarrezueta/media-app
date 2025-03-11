@@ -1,5 +1,27 @@
 import { gql } from "@apollo/client";
 
+export const SEARCH_ISSUES = gql`
+    query SearchIssues($query: String!, $first: Int!, $after: String) {
+        search(query: $query, type: ISSUE, first: $first, after: $after) {
+            edges {
+                node {
+                    ... on Issue {
+                        title
+                        url
+                        createdAt
+                        number
+                        state
+                    }
+                }
+            }
+            pageInfo {
+                endCursor
+                hasNextPage
+            }
+        }
+    }
+`;
+
 export const GET_ISSUES = gql`
     query GetIssues($owner: String!, $name: String!, $states: [IssueState!]) {
         repository(owner: $owner, name: $name) {
