@@ -5,97 +5,121 @@ import IssueCard from "@/components/ui/IssueCard";
 import InputText from "@/components/ui/TextInput";
 import { stateOptions } from "@/constants/Helpers";
 import { SEARCH_ISSUES } from "@/graphql/queries";
-import { Issue } from "@/types/issues";
+import { IssueNode } from "@/types/issues";
 import { useQuery } from "@apollo/client";
 import { isEmpty } from "lodash";
-import get from "lodash/get";
-import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import { FlatList, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import SelectDropdown from "react-native-select-dropdown";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const IssuesScreen = () => {
     const [search, setSearch] = useState("");
     const [state, setState] = useState("");
-    const query = `repo:facebook/react-native ${
-        !isEmpty(search) ? "in:title,body" : ""
-    } ${!isEmpty(search) ? ` is:${state}` : ""}`;
+    const [issues, setIssues] = useState([] as IssueNode[]);
+
+    const query = `owner:facebook repo:react-native type:issue${
+        !isEmpty(search) ? ` state:${state}` : ""
+    }${!isEmpty(search) ? " in:title,body" : ""}`;
 
     // Usage with variables
     const { data, loading, error } = useQuery(SEARCH_ISSUES, {
         variables: {
             query,
+            // after: "",
         },
     });
-    
-    console.log({ data, loading, error });
+
+    useEffect(() => {
+        if (data) {
+            setIssues(data?.search?.edges);
+        }
+    }, [data]);
+
     return (
-        <View>
-            <ThemedView style={styles.titleContainer}>
-                <ThemedText type="title">Welcome!</ThemedText>
-                <HelloWave />
-            </ThemedView>
-            <ThemedView style={styles.stepContainer}>
-                <ThemedText type="subtitle">Search github issue:</ThemedText>
-                <InputText
-                    value={search}
-                    setValue={setSearch}
-                    placeholder="Write issue"
-                />
-                <SelectDropdown
-                    data={stateOptions}
-                    onSelect={(selectedItem) => {
-                        setState(selectedItem.value);
-                    }}
-                    dropdownStyle={styles.dropdownMenuStyle}
-                    renderButton={(selectedItem, isOpened) => {
-                        return (
-                            <View style={styles.dropdownButtonStyle}>
-                                <Text>
-                                    {(selectedItem && selectedItem.title) ||
-                                        "Status"}
-                                </Text>
-                                <Icon
-                                    name={
-                                        isOpened ? "chevron-up" : "chevron-down"
-                                    }
-                                />
-                            </View>
-                        );
-                    }}
-                    renderItem={(item, _, isSelected) => {
-                        return (
-                            <View
-                                style={{
-                                    ...styles.dropdownItemStyle,
-                                    ...(isSelected && {
-                                        backgroundColor: "#D2D9DF",
-                                    }),
+        <SafeAreaView>
+            <FlatList
+                data={issues}
+                style={{ height: "100%" }}
+                renderItem={({ item }) => {
+                    return <IssueCard key={item.node.id} item={item.node} />;
+                }}
+                keyExtractor={(item) => item.node.id}
+                // ItemSeparatorComponent={myItemSeparator}
+                // ListEmptyComponent={myListEmpty}
+                ListHeaderComponent={() => (
+                    <>
+                        <ThemedView style={styles.titleContainer}>
+                            <ThemedText type="title">Welcome!</ThemedText>
+                            <HelloWave />
+                        </ThemedView>
+                        <ThemedView style={styles.stepContainer}>
+                            <ThemedText type="subtitle">
+                                Search github issue:
+                            </ThemedText>
+                            <InputText
+                                value={search}
+                                setValue={setSearch}
+                                placeholder="Write issue"
+                            />
+                            <SelectDropdown
+                                data={stateOptions}
+                                onSelect={(selectedItem) => {
+                                    setState(selectedItem.value);
                                 }}
-                            >
-                                <Text>{item.title}</Text>
-                            </View>
-                        );
-                    }}
-                />
-            </ThemedView>
-            {data?.search?.edges.map(
-                (issue: { node: Issue }, index: number) => {
-                    return (
-                        <IssueCard
-                            key={index}
-                            item={get(issue, "node", {} as Issue)}
-                        />
-                    );
-                }
-            )}
-        </View>
+                                dropdownStyle={styles.dropdownMenuStyle}
+                                renderButton={(selectedItem, isOpened) => {
+                                    return (
+                                        <View
+                                            style={styles.dropdownButtonStyle}
+                                        >
+                                            <Text>
+                                                {(selectedItem &&
+                                                    selectedItem.title) ||
+                                                    "Status"}
+                                            </Text>
+                                            <Icon
+                                                name={
+                                                    isOpened
+                                                        ? "chevron-up"
+                                                        : "chevron-down"
+                                                }
+                                            />
+                                        </View>
+                                    );
+                                }}
+                                renderItem={(item, _, isSelected) => {
+                                    return (
+                                        <View
+                                            style={{
+                                                ...styles.dropdownItemStyle,
+                                                ...(isSelected && {
+                                                    backgroundColor: "#D2D9DF",
+                                                }),
+                                            }}
+                                        >
+                                            <Text>{item.title}</Text>
+                                        </View>
+                                    );
+                                }}
+                            />
+                        </ThemedView>
+                    </>
+                )}
+            />
+        </SafeAreaView>
     );
 };
 
 export default IssuesScreen;
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        // marginTop: 5,
+        // fontSize: 30,
+    },
     titleContainer: {
         flexDirection: "row",
         alignItems: "center",

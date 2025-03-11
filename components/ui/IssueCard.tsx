@@ -12,7 +12,9 @@ type Props = {
 
 const IssueCard = ({ item }: Props) => {
     const url = Linking.useURL();
-    console.log({ url });
+    // console.log({ url });
+    console.log({ item });
+
     return (
         <Link
             href={{
@@ -22,10 +24,10 @@ const IssueCard = ({ item }: Props) => {
             style={{ marginBottom: 16 }}
         >
             <View style={styles.card}>
-                <Text style={styles.number}>Issue # {item.number}</Text>
-                <ThemedText type="subtitle">{item.title}</ThemedText>
-                <Labels labels={item.labels} />
-                <Text style={styles.state}>{item.state}</Text>
+                <Text style={styles.number}>Issue # {item?.number}</Text>
+                <ThemedText type="subtitle">{item?.title}</ThemedText>
+                <Labels labels={item?.labels} />
+                <Text style={styles.state}>{item?.state}</Text>
             </View>
         </Link>
     );
@@ -46,6 +48,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.23,
         shadowRadius: 2.62,
         elevation: 4,
+        width: "100%",
     },
     title: {
         fontSize: 18,
