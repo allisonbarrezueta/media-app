@@ -24,8 +24,6 @@ const IssuesScreen = () => {
     // Usage with variables
     const { data, loading, error } = useQuery(SEARCH_ISSUES, {
         variables: {
-            owner: "facebook",
-            name: "react-native",
             query,
         },
     });
