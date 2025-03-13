@@ -55,3 +55,9 @@ export type CommentNode = {
         };
     };
 };
+
+export type PageInfo = {
+    startCursor: ID;
+    endCursor: ID;
+    hasNextPage: Boolean!;
+};

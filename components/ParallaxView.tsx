@@ -81,6 +81,7 @@ const styles = StyleSheet.create({
     },
     content: {
         padding: 32,
+        paddingBottom: 82,
         gap: 16,
         overflow: "hidden",
         // height: "90vh"

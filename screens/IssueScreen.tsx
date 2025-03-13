@@ -4,15 +4,16 @@ import CommentCard from "@/components/ui/CommentCard";
 import { GET_COMMENTS, GET_ISSUE } from "@/graphql/queries";
 import { Repository } from "@/types/issues";
 import { useQuery } from "@apollo/client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, SafeAreaView, StyleSheet } from "react-native";
-import Markdown, { MarkdownIt } from "react-native-markdown-display";
+import Markdown from "react-native-markdown-display";
 
 type Props = {
     number: number | string;
 };
 
 const IssueScreen = ({ number }: Props) => {
+    const [after, setAfter] = useState("");
     const {
         data: comments,
         loading: loadingComments,
@@ -22,8 +23,17 @@ const IssueScreen = ({ number }: Props) => {
             owner: "facebook",
             name: "react-native",
             number,
+            after,
         },
     });
+
+    const loadMore = () => {
+        if (comments?.search?.pageInfo?.hasNextPage) {
+            setAfter(comments?.search?.pageInfo?.endCursor);
+        }
+    };
+
+    useEffect(() => {}, []);
 
     return (
         <SafeAreaView>
@@ -32,6 +42,8 @@ const IssueScreen = ({ number }: Props) => {
                 style={{ padding: 32 }}
                 keyExtractor={(item) => item.node.id}
                 ListHeaderComponent={() => <IssueHeader number={number} />}
+                onEndReachedThreshold={0.3}
+                onEndReached={loadMore}
                 renderItem={({ item }) => {
                     return <CommentCard comment={item} />;
                 }}
@@ -58,7 +70,7 @@ const IssueHeader = ({ number }: { number: number | string }) => {
     const issue = (dataIssue as Repository)?.repository?.issue;
 
     return (
-        <>
+        <SafeAreaView>
             <ThemedView style={styles.titleContainer}>
                 <ThemedText type="title">
                     {issue?.title}{" "}
@@ -67,11 +79,9 @@ const IssueHeader = ({ number }: { number: number | string }) => {
                     </ThemedText>
                 </ThemedText>
             </ThemedView>
-            <Markdown markdownit={MarkdownIt({ typographer: true })}>
-                {issue?.body}
-            </Markdown>
+            <Markdown>{issue?.body ?? ""}</Markdown>
             <ThemedText type="subtitle">Comments</ThemedText>
-        </>
+        </SafeAreaView>
     );
 };
 

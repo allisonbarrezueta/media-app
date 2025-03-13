@@ -1,3 +1,4 @@
+import ParallaxScrollView from "@/components/ParallaxScrollView";
 import ParallaxView from "@/components/ParallaxView";
 import IssuesScreen from "@/screens/IssuesScreen";
 import { Image, StyleSheet } from "react-native";

@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const SEARCH_ISSUES = gql`
-    query SearchIssues($query: String!) {
-        search(query: $query, type: ISSUE, first: 10) {
+    query SearchIssues($query: String!, $after: String!) {
+        search(query: $query, type: ISSUE, first: 10, after: $after) {
             edges {
                 node {
                     ... on Issue {
@@ -21,6 +21,7 @@ export const SEARCH_ISSUES = gql`
                         }
                     }
                 }
+                cursor
             }
             pageInfo {
                 endCursor
@@ -112,10 +113,15 @@ export const GET_ISSUE = gql`
 `;
 
 export const GET_COMMENTS = gql`
-    query GetIssue($owner: String!, $name: String!, $number: Int!) {
+    query GetIssue(
+        $owner: String!
+        $name: String!
+        $number: Int!
+        $after: String!
+    ) {
         repository(owner: $owner, name: $name) {
             issue(number: $number) {
-                comments(first: 10) {
+                comments(first: 15, after: $after) {
                     edges {
                         node {
                             id
@@ -125,10 +131,10 @@ export const GET_COMMENTS = gql`
                                 login
                             }
                         }
+                        cursor
                     }
                     pageInfo {
                         endCursor
-                        hasNextPage
                     }
                 }
             }

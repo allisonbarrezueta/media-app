@@ -7,7 +7,7 @@ import { stateOptions } from "@/constants/Helpers";
 import { SEARCH_ISSUES } from "@/graphql/queries";
 import { IssueNode } from "@/types/issues";
 import { useQuery } from "@apollo/client";
-import { isEmpty } from "lodash";
+import { isEmpty, uniqBy } from "lodash";
 import { useEffect, useState } from "react";
 import { FlatList, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import SelectDropdown from "react-native-select-dropdown";
@@ -17,21 +17,36 @@ const IssuesScreen = () => {
     const [search, setSearch] = useState("");
     const [state, setState] = useState("");
     const [issues, setIssues] = useState([] as IssueNode[]);
+    const [after, setAfter] = useState("");
 
-    const query = `owner:facebook repo:react-native type:issue${
-        !isEmpty(search) ? ` state:${state}` : ""
+    const query = `is:issue archived:false repo:facebook/react-native sort:created-desc${
+        !isEmpty(state) ? ` state:${state}` : ""
     }${!isEmpty(search) ? " in:title,body" : ""}`;
+
+    console.log({ state: !isEmpty(state), query });
 
     // Usage with variables
     const { data, loading, error } = useQuery(SEARCH_ISSUES, {
         variables: {
             query,
+            after,
         },
     });
 
+    const loadMore = () => {
+        if (data?.search?.pageInfo?.hasNextPage) {
+            setAfter(data?.search?.pageInfo?.endCursor);
+        }
+    };
+
     useEffect(() => {
         if (!isEmpty(data?.search?.edges)) {
-            setIssues(data?.search?.edges);
+            const newData = data?.search?.edges;
+            const filteredIssues = isEmpty(state)
+                ? issues
+                : issues.filter((issue) => issue?.node?.state === state);
+
+            setIssues(uniqBy([...filteredIssues, ...newData], "node.id"));
         }
     }, [data]);
 
@@ -43,6 +58,8 @@ const IssuesScreen = () => {
                 renderItem={({ item }) => {
                     return <IssueCard key={item.node.id} item={item.node} />;
                 }}
+                onEndReachedThreshold={0.3}
+                onEndReached={loadMore}
                 keyExtractor={(item) => item.node.id}
                 // ListEmptyComponent={myListEmpty}
                 ListHeaderComponent={() => (
@@ -69,6 +86,7 @@ const IssuesScreen = () => {
                                 renderButton={(selectedItem, isOpened) => {
                                     return (
                                         <View
+                                            key={selectedItem?.value}
                                             style={styles.dropdownButtonStyle}
                                         >
                                             <Text>
